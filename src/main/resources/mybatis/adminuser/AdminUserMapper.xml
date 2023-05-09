@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.blog.blograss.apis.adminuser.AdminUserMapper">
+    <insert id="insertAdminUser" parameterType="com.blog.blograss.apis.adminuser.object.AdminUserDto">
+        INSERT INTO admin (adminid, adminname, password)
+        VALUES (#{adminId}, #{adminName}, #{password})
+    </insert>
+
+    <select id="getAdminUserById" parameterType="String" resultType="com.blog.blograss.apis.adminuser.object.AdminUserDto">
+        SELECT * FROM admin WHERE adminid = #{adminId};
+    </select>
+
+</mapper>
