@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.blog.blograss.apis.banner.BannerMapper">
+    <insert id="createBanner">
+        INSERT INTO banner (bannerid, bannername, bannertype, url, startedat, endedat)
+        VALUES (#{bannerId}, #{bannerName}, #{bannerType}, #{url}, #{startedAt}, #{endedAt})
+    </insert>
+
+    <select id="getBanner" resultType="com.blog.blograss.apis.banner.object.BannerDto">
+        SELECT * FROM banner WHERE bannerid = #{bannerId}
+    </select>
+</mapper>
