@@ -17,7 +17,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public ResponseEntity<Message> insertAdminUser(AdminUserDto adminUserDto) {
         try {
             adminUserMapper.insertAdminUser(adminUserDto);
-            return ResponseEntity.ok().body(Message.write("SUCESS"));
+            return ResponseEntity.ok().body(Message.write("SUCCESS"));
         } catch(Exception e) {
             return ResponseEntity.internalServerError().body(Message.write("INTERNAL_SERVER_ERROR", e));
         }
