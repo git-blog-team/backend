@@ -11,4 +11,38 @@
     <select id="getBanner" resultType="com.blog.blograss.apis.banner.object.BannerDto">
         SELECT * FROM banner WHERE bannerid = #{bannerId}
     </select>
+
+    <select id="deleteBanner" resultType="com.blog.blograss.apis.banner.object.BannerDto">
+        DELETE FROM banner WHERE bannerid = #{bannerId}
+    </select>
+
+    <select id="getBannerList" resultType="com.blog.blograss.apis.banner.object.BannerDto">
+        SELECT * FROM banner LIMIT 20 OFFSET #{offset}
+    </select>
+
+    <select id="getTotalCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM banner
+    </select>
+
+    <update id="updateBanner">
+        UPDATE banner
+        <set>
+            <if test="bannerName != null">
+                bannername = #{bannerName},
+            </if>
+            <if test="bannerType != null">
+                bannertype = #{bannerType},
+            </if>
+            <if test="startedAt != null">
+                startedat = #{startedAt},
+            </if>
+            <if test="url != null">
+                url = #{url},
+            </if>
+            <if test="endedAt != null">
+                endedat = #{endedAt},
+            </if>
+        </set>
+        WHERE bannerid = #{bannerId}
+    </update>
 </mapper>
