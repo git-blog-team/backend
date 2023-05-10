@@ -2,5 +2,32 @@
 <!DOCTYPE mapper
      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
-<mapper namespace="com.blog.blograss.apis.notice.NoticeMapper">   
+<mapper namespace="com.blog.blograss.apis.notice.NoticeMapper">
+
+     <insert id="createNotice">
+          INSERT INTO notice (noticeid, title, content)
+          VALUES (#{noticeId}, #{title}, #{content})
+     </insert>
+
+     <select id="getNotice" resultType="com.blog.blograss.apis.notice.object.NoticeDto">
+          SELECT * FROM notice WHERE noticeid = #{noticeId}
+     </select>
+
+     <select id="deleteNotice" resultType="com.blog.blograss.apis.notice.object.NoticeDto">
+        DELETE FROM notice WHERE noticeid = #{noticeId}
+     </select>
+
+     <update id="updateNotice">
+          UPDATE notice
+          <set>
+               <if test="title != null">
+                    title = #{title},
+               </if>
+               <if test="content != null">
+                    content = #{content},
+               </if>
+          </set>
+          WHERE noticeid = #{noticeId}
+     </update>
+
 </mapper>
