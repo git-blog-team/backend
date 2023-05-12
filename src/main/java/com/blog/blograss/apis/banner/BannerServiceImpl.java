@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.blog.blograss.apis.banner.object.BannerDto;
+import com.blog.blograss.apis.banner.object.BannerIdsDto;
+import com.blog.blograss.apis.banner.object.BannerListQueryDto;
 import com.blog.blograss.commons.response.Message;
 
 @Service
@@ -64,12 +66,12 @@ public class BannerServiceImpl implements BannerService {
     }
 
     @Override
-    public ResponseEntity<Message> deleteBanner(BannerDto banner, String bannerId) {
+    public ResponseEntity<Message> deleteBanner(BannerIdsDto bannerIds) {
         try {
         
-            bannerMapper.deleteBanner(bannerId);
+            bannerMapper.deleteBanner(bannerIds);
 
-            return ResponseEntity.ok().body(Message.write("SUCCESS", bannerId));
+            return ResponseEntity.ok().body(Message.write("SUCCESS", bannerIds));
     
         } catch(Exception e) {
     
@@ -81,15 +83,23 @@ public class BannerServiceImpl implements BannerService {
     }
 
     @Override
-    public ResponseEntity<Message> getBannerList(int page) {
+    public ResponseEntity<Message> getBannerList(int page, String bannerType, String search, String sortField, String sortOrder) {
 
         try {
 
             int offset = (page - 1) * 20;
-            
-            List<BannerDto> getBannerList = bannerMapper.getBannerList(offset);
 
-            int totalCount = bannerMapper.getTotalCount();
+            BannerListQueryDto bannerListQueryDto = BannerListQueryDto.builder()
+                    .offset(offset)
+                    .bannerType(bannerType)
+                    .sortField(sortField)
+                    .sortOrder(sortOrder)
+                    .search(search)
+                    .build();
+            
+            List<BannerDto> getBannerList = bannerMapper.getBannerList(bannerListQueryDto);
+
+            int totalCount = bannerMapper.getTotalCount(bannerType,search);
 
             if (getBannerList != null) {
                 
