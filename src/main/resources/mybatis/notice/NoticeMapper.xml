@@ -13,9 +13,34 @@
           SELECT * FROM notice WHERE noticeid = #{noticeId}
      </select>
 
-     <select id="deleteNotice" resultType="com.blog.blograss.apis.notice.object.NoticeDto">
-        DELETE FROM notice WHERE noticeid = #{noticeId}
+     <select id="deleteNotice">
+        DELETE FROM notice WHERE noticeid IN
+        <foreach item="item" index="index" collection="noticeIds" open="(" separator="," close=")">
+          #{item}
+        </foreach>
      </select>
+
+     <select id="getNoticeList" resultType="com.blog.blograss.apis.notice.object.NoticeDto">
+        SELECT * FROM notice 
+        <where>
+            <if test="search != ''">
+                AND title LIKE CONCAT('%',#{search},'%')
+            </if>
+        </where>
+        <if test="sortField != '' and sortOrder != ''">
+            ORDER BY ${sortField} ${sortOrder}
+        </if>
+        LIMIT 20 OFFSET #{offset}
+    </select>
+
+    <select id="getNoticeCount" resultType="java.lang.Integer">
+          SELECT COUNT(*) FROM notice
+          <where>
+               <if test="search != ''">
+                    title LIKE CONCAT('%',#{search},'%')
+               </if>
+          </where>
+    </select>
 
      <update id="updateNotice">
           UPDATE notice
