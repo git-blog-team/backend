@@ -28,7 +28,8 @@ public class SecurityConfig {
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     private static final String[] WHITE_LIST = {
-        "/**"
+        "/admin/login",
+		"/admin/signup"
     };
 
 

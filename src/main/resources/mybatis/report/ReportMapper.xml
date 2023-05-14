@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.blog.blograss.apis.report.ReportMapper">
+
+     <insert id="insertReport" parameterType="com.blog.blograss.apis.report.object.ReportDto">
+          INSERT INTO report (reportid, type, status, target, targetid, userid)
+               VALUES (#{reportId}, #{type}, #{status}, #{target}, #{targetId}, #{userId});
+     </insert>
+
+     <update id="updateReportStatus" parameterType="com.blog.blograss.apis.report.object.ReportDto">
+          UPDATE report 
+               SET status = #{status}, solvedat = #{solvedAt}
+               WHERE reportid = #{reportId};
+     </update>
+
+     <update id="updatePostReport" parameterType="java.util.Map">
+          UPDATE post
+          <if test="reportType == 'plus'">
+               SET reportcount = reportcount + #{reportCount}
+          </if>
+          <if test="reportType == 'minus'">
+               SET reportcount = reportcount - #{reportCount}
+          </if>
+               WHERE postid = #{targetId};
+     </update>
+
+     <update id="updateCommentReport" parameterType="java.util.Map">
+          UPDATE comment
+          <if test="reportType == 'plus'">
+               SET reportcount = reportcount + #{reportCount}
+          </if>
+          <if test="reportType == 'minus'">
+               SET reportcount = reportcount - #{reportCount}
+          </if>
+               WHERE commentid = #{targetId};
+     </update>
+
+     <update id="updateUserReportCount" parameterType="java.util.Map">
+          UPDATE user
+          <if test="reportType == 'plus'">
+               SET reportcount = reportcount + #{reportCount}
+          </if>
+          <if test="reportType == 'minus'">
+               SET reportcount = reportcount - #{reportCount}
+          </if>
+               WHERE userid = #{userId};
+     </update>
+
+     <select id="getReportById" parameterType="String" resultType="com.blog.blograss.apis.report.object.ReportDto">
+          SELECT * FROM report WHERE reportid = #{reportId};
+     </select>
+
+     <select id="getPostById" parameterType="String" resultType="java.util.HashMap">
+          SELECT * FROM post WHERE postid = #{targetId};
+     </select>
+
+     <select id="getCommentById" parameterType="String" resultType="java.util.HashMap">
+          SELECT * FROM comment WHERE commentid = #{targetId};
+     </select>
+
+</mapper>
