@@ -11,6 +11,10 @@ public interface AdminUserService {
 
     ResponseEntity<Message> login(AdminUserDto adminUserDto);
 
+    ResponseEntity<Message> logout(String accessToken, String refreshToken);
+
+    ResponseEntity<Message> reissue(String accessToken, String refreshToken);
+
     AdminUserDto getAdminUserById(String adminId);
 
 }

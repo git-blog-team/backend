@@ -31,7 +31,7 @@ public class SecurityConfig {
         "/**"
     };
 
-	@Autowired
+
 	public SecurityConfig(JwtTokenProvider tokenProvider, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
 			JwtAccessDeniedHandler jwtAccessDeniedHandler) {
 		this.tokenProvider = tokenProvider;

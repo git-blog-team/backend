@@ -13,6 +13,9 @@ import com.blog.blograss.apis.adminuser.object.AdminUserDto;
 import com.blog.blograss.apis.adminuser.object.TokenDto;
 import com.blog.blograss.commons.jwt.JwtTokenProvider;
 import com.blog.blograss.commons.response.Message;
+import com.blog.blograss.commons.util.RedisUtil;
+
+import io.jsonwebtoken.Claims;
 
 @Service
 public class AdminUserServiceImpl implements AdminUserService {
@@ -25,6 +28,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Autowired
     private JwtTokenProvider tokenProvider;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public ResponseEntity<Message> insertAdminUser(AdminUserDto adminUserDto) {
@@ -63,6 +69,44 @@ public class AdminUserServiceImpl implements AdminUserService {
         accessToken.setRefreshToken(refreshToken.getRefreshToken());
 
         return ResponseEntity.ok().body(Message.write("SUCESS", accessToken));
+    }
+
+    @Override
+    public ResponseEntity<Message> logout(String accessToken, String refreshToken) {
+        Claims claims = tokenProvider.getClaims(refreshToken);
+        String userId = claims.getSubject();
+
+        if (!redisUtil.get(refreshToken).equals(userId))
+            return ResponseEntity.badRequest().body(Message.write("USER_NOTFOUND_ERR"));
+
+        try {
+
+            redisUtil.delete(accessToken);
+            redisUtil.delete(refreshToken);
+
+            return ResponseEntity.ok().body(Message.write("SUCESS"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Message.write(e.getMessage()));
+        }
+    }
+
+    @Override
+    public ResponseEntity<Message> reissue(String accessToken, String refreshToken) {
+        Claims claims = tokenProvider.getClaims(refreshToken);
+
+        String userId = claims.getSubject();
+
+        Object redisUserId = redisUtil.get(refreshToken);
+
+        if (!userId.equals(redisUserId)) {
+            return ResponseEntity.badRequest().body(Message.write("REFRESHTOKEN_NOTFOUND_ERR"));
+        }
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userId, null);
+
+        TokenDto tokenDto = tokenProvider.createToken(authentication, refreshToken);
+
+        return ResponseEntity.ok().body(Message.write("SUCESS", tokenDto));
     }
     
 }
