@@ -9,6 +9,8 @@ public interface AdminUserService {
     
     ResponseEntity<Message> insertAdminUser(AdminUserDto adminUserDto);
 
+    ResponseEntity<Message> login(AdminUserDto adminUserDto);
+
     AdminUserDto getAdminUserById(String adminId);
 
 }

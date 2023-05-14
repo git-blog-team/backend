@@ -44,5 +44,11 @@ public class AdminUserController {
         
         return adminUserService.insertAdminUser(adminUserDto);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<Message> login(@RequestBody AdminUserDto adminUserDto) {
+
+        return adminUserService.login(adminUserDto);
+    }
     
 }
