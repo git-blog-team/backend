@@ -1,7 +1,7 @@
 package com.blog.blograss.apis.image;
 
 import java.time.Instant;
-import java.util.UUID;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,9 +39,11 @@ public class ImageUploadController {
         if (dotIndex > 0) {
         extension = originalName.substring(dotIndex);
         }
-
-        // UUID + timestamp로 새로운 UUID 만들기
-        String newName = UUID.randomUUID().toString() + "-" + Instant.now().getEpochSecond() + extension;
+        Random rnd = new Random();
+        String randomTemp = String.valueOf((char) ((int) (rnd.nextInt(26)) + 65));
+        
+        //timestamp로 새로운 UUID 만들기
+        String newName = "D-" + Instant.now().getEpochSecond() + randomTemp + extension;
 
         String bucketPath = "images/" + newName;
         
