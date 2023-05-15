@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.blog.blograss.apis.notice.NoticeMapper">
+
+     <insert id="createNotice">
+          INSERT INTO notice (noticeid, title, content)
+          VALUES (#{noticeId}, #{title}, #{content})
+     </insert>
+
+     <select id="getNotice" resultType="com.blog.blograss.apis.notice.object.NoticeDto">
+          SELECT * FROM notice WHERE noticeid = #{noticeId}
+     </select>
+
+     <select id="deleteNotice">
+        DELETE FROM notice WHERE noticeid IN
+        <foreach item="item" index="index" collection="noticeIds" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+     </select>
+
+     <select id="getNoticeList" resultType="com.blog.blograss.apis.notice.object.NoticeDto">
+        SELECT * FROM notice 
+        <where>
+            <if test="search != ''">
+                AND title LIKE CONCAT('%',#{search},'%')
+            </if>
+        </where>
+        <if test="sortField != '' and sortOrder != ''">
+            ORDER BY ${sortField} ${sortOrder}
+        </if>
+        LIMIT 20 OFFSET #{offset}
+    </select>
+
+    <select id="getNoticeCount" resultType="java.lang.Integer">
+          SELECT COUNT(*) FROM notice
+          <where>
+               <if test="search != ''">
+                    title LIKE CONCAT('%',#{search},'%')
+               </if>
+          </where>
+    </select>
+
+     <update id="updateNotice">
+          UPDATE notice
+          <set>
+               <if test="title != null">
+                    title = #{title},
+               </if>
+               <if test="content != null">
+                    content = #{content},
+               </if>
+          </set>
+          WHERE noticeid = #{noticeId}
+     </update>
+
+</mapper>

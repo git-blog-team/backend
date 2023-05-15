@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.blog.blograss.apis.banner.BannerMapper">
+
+    <insert id="createBanner">
+        INSERT INTO banner (bannerid, bannername, bannertype, url, startedat, endedat)
+        VALUES (#{bannerId}, #{bannerName}, #{bannerType}, #{url}, #{startedAt}, #{endedAt})
+    </insert>
+
+    <select id="getBanner" resultType="com.blog.blograss.apis.banner.object.BannerDto">
+        SELECT * FROM banner WHERE bannerid = #{bannerId}
+    </select>
+
+    <select id="deleteBanner">
+        DELETE FROM banner WHERE bannerid IN
+        <foreach item="item" index="index" collection="bannerIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="getBannerList" resultType="com.blog.blograss.apis.banner.object.BannerDto">
+        SELECT * FROM banner 
+       <where>
+            <if test="bannerType != ''">
+                bannertype LIKE CONCAT('%',#{bannerType},'%')
+            </if>
+            <if test="search != ''">
+                AND bannername LIKE CONCAT('%',#{search},'%')
+            </if>
+        </where>
+        <if test="sortField != '' and sortOrder != ''">
+            ORDER BY ${sortField} ${sortOrder}
+        </if>
+        LIMIT 20 OFFSET #{offset}
+    </select>
+
+    <select id="getTotalCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM banner
+        <where>
+            <if test="search != ''">
+                bannername LIKE CONCAT('%',#{search},'%') 
+            </if>
+            <if test="bannerType != ''">
+                AND bannertype LIKE CONCAT('%',#{bannerType},'%') 
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBanner">
+        UPDATE banner
+        <set>
+            <if test="bannerName != null">
+                bannername = #{bannerName},
+            </if>
+            <if test="bannerType != null">
+                bannertype = #{bannerType},
+            </if>
+            <if test="startedAt != null">
+                startedat = #{startedAt},
+            </if>
+            <if test="url != null">
+                url = #{url},
+            </if>
+            <if test="endedAt != null">
+                endedat = #{endedAt},
+            </if>
+        </set>
+        WHERE bannerid = #{bannerId}
+    </update>
+    
+</mapper>
