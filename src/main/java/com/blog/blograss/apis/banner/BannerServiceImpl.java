@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.blog.blograss.apis.banner.object.BannerDto;
 import com.blog.blograss.apis.banner.object.BannerIdsDto;
 import com.blog.blograss.apis.banner.object.BannerListQueryDto;
@@ -18,6 +20,12 @@ public class BannerServiceImpl implements BannerService {
 
     @Autowired
     private BannerMapper bannerMapper;
+
+    @Autowired
+    AmazonS3 amazonS3Client;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     @Override
     public ResponseEntity<Message> createBanner(BannerDto bannerDto) {
@@ -68,6 +76,14 @@ public class BannerServiceImpl implements BannerService {
     @Override
     public ResponseEntity<Message> deleteBanner(BannerIdsDto bannerIds) {
         try {
+
+            List<String> imageIdsToDelete = bannerMapper.getBannerImageIdsToDelete(bannerIds);
+
+            for (String bannerImageId : imageIdsToDelete) {
+
+                amazonS3Client.deleteObject(bucket, "images/" + bannerImageId);
+
+            }
         
             bannerMapper.deleteBanner(bannerIds);
 

@@ -5,8 +5,8 @@
 <mapper namespace="com.blog.blograss.apis.banner.BannerMapper">
 
     <insert id="createBanner">
-        INSERT INTO banner (bannerid, bannername, bannertype, url, startedat, endedat)
-        VALUES (#{bannerId}, #{bannerName}, #{bannerType}, #{url}, #{startedAt}, #{endedAt})
+        INSERT INTO banner (bannerid, bannername, bannertype, imageid, startedat, endedat)
+        VALUES (#{bannerId}, #{bannerName}, #{bannerType}, #{imageId}, #{startedAt}, #{endedAt})
     </insert>
 
     <select id="getBanner" resultType="com.blog.blograss.apis.banner.object.BannerDto">
@@ -17,6 +17,13 @@
         DELETE FROM banner WHERE bannerid IN
         <foreach item="item" index="index" collection="bannerIds" open="(" separator="," close=")">
             #{item}
+        </foreach>
+    </select>
+
+    <select id="getBannerImageIdsToDelete" resultType="string">
+        SELECT imageid FROM banner WHERE bannerid IN
+        <foreach item="item" index="index" collection="bannerIds" open="(" separator="," close=")">
+               #{item}
         </foreach>
     </select>
 
@@ -60,8 +67,8 @@
             <if test="startedAt != null">
                 startedat = #{startedAt},
             </if>
-            <if test="url != null">
-                url = #{url},
+            <if test="imageId != null">
+                imageid = #{imageId},
             </if>
             <if test="endedAt != null">
                 endedat = #{endedAt},

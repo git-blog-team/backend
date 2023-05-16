@@ -16,7 +16,7 @@ public interface NoticeMapper {
 
     void createNotice(NoticeDto notice);
 
-    List<NoticeDto> getNoticeList(NoticeListQueryDto noticeListDto);
+    void insertNoticeImage(@Param("noticeId") String noticeId, @Param("imageId") String imageId);
 
     int getNoticeCount(@Param("search") String search);
 
@@ -24,4 +24,9 @@ public interface NoticeMapper {
 
     void deleteNotice(NoticeIdsDto noticeIds);
     
+    void deleteNoticeImage(NoticeIdsDto noticeIds);
+
+    List<NoticeDto> getNoticeList(NoticeListQueryDto noticeListDto);
+
+    List<String> getNoticeImageIdsToDelete(NoticeIdsDto noticeIds);
 }

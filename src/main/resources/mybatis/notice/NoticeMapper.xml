@@ -9,8 +9,31 @@
           VALUES (#{noticeId}, #{title}, #{content})
      </insert>
 
-     <select id="getNotice" resultType="com.blog.blograss.apis.notice.object.NoticeDto">
-          SELECT * FROM notice WHERE noticeid = #{noticeId}
+     <insert id="insertNoticeImage">
+          INSERT INTO noticeimage (noticeid, imageid)
+          VALUES (#{noticeId}, #{imageId})
+     </insert>
+
+     <resultMap id="NoticeResultMap" type="com.blog.blograss.apis.notice.object.NoticeDto">
+          <id property="noticeId" column="noticeid" />
+          <result property="title" column="title" />
+          <result property="content" column="content" />
+          <result property="createdAt" column="createdAt" />
+          <collection property="imageIds" ofType="string" javaType="java.util.ArrayList">
+               <result column="imageid"/>
+          </collection>
+     </resultMap>
+
+     <select id="getNotice" resultMap="NoticeResultMap">
+          SELECT
+               n.noticeid,
+               n.title,
+               n.content,
+               n.createdAt,
+               ni.imageid
+          FROM notice n
+          LEFT JOIN noticeimage ni ON n.noticeid = ni.noticeid
+          WHERE n.noticeid = #{noticeId}
      </select>
 
      <select id="deleteNotice">
@@ -18,6 +41,21 @@
         <foreach item="item" index="index" collection="noticeIds" open="(" separator="," close=")">
           #{item}
         </foreach>
+     </select>
+
+     <select id="getNoticeImageIdsToDelete" resultType="string">
+          SELECT imageid FROM noticeimage WHERE noticeid IN
+          <foreach item="item" index="index" collection="noticeIds" open="(" separator="," close=")">
+               #{item}
+          </foreach>
+     </select>
+
+
+     <select id="deleteNoticeImage">
+          DELETE FROM noticeimage WHERE noticeid IN
+          <foreach item="item" index="index" collection="noticeIds" open="(" separator="," close=")">
+               #{item}
+          </foreach>
      </select>
 
      <select id="getNoticeList" resultType="com.blog.blograss.apis.notice.object.NoticeDto">

@@ -19,10 +19,14 @@ public interface BannerMapper {
     void updateBanner(BannerDto banner);
 
     BannerDto getBanner(String bannerId);
-    
+
     List<BannerDto> getBannerList(BannerListQueryDto bannerListQuery);
-    
-    int getTotalCount(@Param("bannerType") String bannerType , @Param("search") String search);
+
+    int getTotalCount(@Param("bannerType") String bannerType, @Param("search") String search);
+
+    List<String> getBannerImageIdsToDelete(BannerIdsDto bannerIds);
 
 }
+
+
 
