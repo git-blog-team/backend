@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,19 +44,27 @@ public class ImageUploadController {
         String randomTemp = String.valueOf((char) ((int) (rnd.nextInt(26)) + 65));
         
         //timestamp로 새로운 UUID 만들기
-        String newName = "D-" + Instant.now().getEpochSecond() + randomTemp + extension;
+        String newName = "B-" + Instant.now().getEpochSecond() + randomTemp;
 
         String bucketPath = "images/" + newName;
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType("image/" + extension);
         
         // S3에 업로드 하기
 		amazonS3Client.putObject(
-			new PutObjectRequest(bucket, bucketPath, file.getInputStream(), new ObjectMetadata())
+			new PutObjectRequest(bucket, bucketPath, file.getInputStream(), metadata)
 				.withCannedAcl(CannedAccessControlList.PublicRead)
 		);
-			
-		String imagePath = amazonS3Client.getUrl(bucket, bucketPath).toString(); // 접근가능한 URL 가져오기
         
-        return ResponseEntity.ok(Message.write("SUCCESS", imagePath));
+        
+        String imagePath = amazonS3Client.getUrl(bucket, bucketPath).toString(); // 접근가능한 URL 가져오기
+        
+        if (imagePath != null) {
+            return ResponseEntity.ok(Message.write("SUCCESS", newName));
+        } else {
+            return ResponseEntity.status(HttpStatusCode.valueOf(500)).body(Message.write("FAIL"));
+        }
     
     }
 
