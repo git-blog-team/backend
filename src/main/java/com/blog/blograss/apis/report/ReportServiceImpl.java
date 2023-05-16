@@ -40,6 +40,10 @@ public class ReportServiceImpl implements ReportService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Message.write("NOT_FOUND_REPORT"));
         }
 
+        if(findReportDto.getStatus().equals(Status.DENY)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Message.write("ALREADY_DENY_ERR"));
+        }
+
         try {
             Map<String, Object> findTargetMap = null;
 
@@ -125,6 +129,10 @@ public class ReportServiceImpl implements ReportService {
         // 신고글이 있는지 확인
         if(findReportDto == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Message.write("NOT_FOUND_REPORT"));
+        }
+
+        if(findReportDto.getStatus().equals(Status.APPROVAL)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Message.write("ALREADY_APPROVAL_ERR"));
         }
 
         try {
