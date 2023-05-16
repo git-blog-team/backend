@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.blog.blograss.apis.notice.object.NoticeDto;
 import com.blog.blograss.apis.notice.object.NoticeIdsDto;
 import com.blog.blograss.apis.notice.object.NoticeListQueryDto;
@@ -19,8 +21,15 @@ public class NoticeServiceImpl implements NoticeService {
     @Autowired
     private NoticeMapper noticeMapper;
 
+    @Autowired
+    AmazonS3 amazonS3Client;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
     @Override
     public ResponseEntity<Message> createNotice(NoticeDto noticeDto) {
+
 
         try {
 
@@ -29,6 +38,12 @@ public class NoticeServiceImpl implements NoticeService {
             noticeDto.setNoticeId(noticeId);
 
             noticeMapper.createNotice(noticeDto);
+
+            for (String imageId : noticeDto.getImageIds()) {
+
+                noticeMapper.insertNoticeImage(noticeId, imageId);
+            
+            }
 
             NoticeDto getNotice = noticeMapper.getNotice(noticeId);
 
@@ -99,9 +114,18 @@ public class NoticeServiceImpl implements NoticeService {
     
     @Override
     public ResponseEntity<Message> deleteNotice(NoticeIdsDto noticeIdsDto) {
-
+        
         try {
 
+            List<String> imageIdsToDelete = noticeMapper.getNoticeImageIdsToDelete(noticeIdsDto);
+
+            for (String imageId : imageIdsToDelete) {
+                String bucketPath = "images/" + imageId;
+                amazonS3Client.deleteObject(bucket, bucketPath);
+            }
+
+            noticeMapper.deleteNoticeImage(noticeIdsDto);
+            
             noticeMapper.deleteNotice(noticeIdsDto);
 
             return ResponseEntity.ok().body(Message.write("SUCCESS", noticeIdsDto));
@@ -120,6 +144,15 @@ public class NoticeServiceImpl implements NoticeService {
     public ResponseEntity<Message> updateNotice(NoticeDto noticeDto, String noticeId) {
 
         try {
+            List<String> list = java.util.Arrays.asList(noticeId);
+
+            noticeMapper.deleteNoticeImage(NoticeIdsDto.builder().noticeIds(list).build());
+
+            for (String imageId : noticeDto.getImageIds()) {
+
+                noticeMapper.insertNoticeImage(noticeId, imageId);
+            
+            }
 
             noticeMapper.updateNotice(noticeDto);
 

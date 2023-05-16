@@ -8,7 +8,7 @@ public class BannerDto {
     private String bannerId;
     private String bannerName;
     private String bannerType;
-    private String url;
+    private String imageId;
     private String createdAt;
     private String startedAt;
     private String endedAt;
