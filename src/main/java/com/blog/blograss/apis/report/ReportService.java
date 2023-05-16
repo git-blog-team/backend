@@ -7,6 +7,8 @@ import com.blog.blograss.commons.response.Message;
 
 public interface ReportService {
 
+    ResponseEntity<Message> getReportDetail(String reportId);
+
     ResponseEntity<Message> acceptReport(ReportDto reportDto, String adminId);
 
     ResponseEntity<Message> denyReport(ReportDto reportDto, String adminId);

@@ -15,6 +15,12 @@ public interface ReportMapper {
 
     Map<String, Object> getCommentById(String targetId);
 
+    Map<String, Object> getReportTargetDetailByPost(String reportId);
+
+    Map<String, Object> getReportTargetDetailByComment(String reportId);
+
+    String getReportTargetById(String reportId);
+
     void insertReport(ReportDto reportDto);
 
     void updateReportStatus(ReportDto reportDto);
