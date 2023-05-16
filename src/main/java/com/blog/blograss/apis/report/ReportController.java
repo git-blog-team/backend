@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blog.blograss.apis.report.object.ReportDto;
+import com.blog.blograss.apis.report.object.ReportListParamDto;
 import com.blog.blograss.commons.jwt.JwtTokenProvider;
 import com.blog.blograss.commons.response.Message;
 
@@ -28,13 +29,33 @@ public class ReportController {
     
     @GetMapping("/list")
     public ResponseEntity<Message> getReportList(
+        @RequestParam String search,
         @RequestParam Integer page,
         @RequestParam String target,
         @RequestParam String type,
         @RequestParam String status,
-        @RequestParam String order
+        @RequestParam String sortField,
+        @RequestParam String sortOrder
     ) {
-        return null;
+
+        if(sortField == null || sortField.matches("") && sortOrder == null || sortOrder.matches("")) {
+            sortField = "createdat";
+            sortOrder = "DESC";
+        }
+
+        Integer offset = (page - 1) * 20;
+
+        ReportListParamDto reportListParamDto = ReportListParamDto.builder()
+                .search(search)
+                .offset(offset)
+                .target(target)
+                .type(type)
+                .status(status)
+                .sortField(sortField)
+                .sortOrder(sortOrder)
+                .build();
+
+        return reportService.getReportList(reportListParamDto);
     }
 
     @GetMapping
