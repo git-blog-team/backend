@@ -119,4 +119,44 @@
 	          WHERE r.targetid = c.commentid AND r.reportid = #{reportId};
      </select>
 
+     <select id="getReportList" parameterType="com.blog.blograss.apis.report.object.ReportListParamDto" resultType="com.blog.blograss.apis.report.object.ReportDto">
+          SELECT * FROM report
+               <where>
+                    <if test="search != '' and search != null">
+                          AND userid LIKE CONCAT('%',#{search},'%')
+                    </if>
+                    <if test="target != '' and target != null">
+                          AND target = #{target}
+                    </if>
+                    <if test="type != '' and type != null">
+                          AND type = #{type}
+                    </if>
+                    <if test="status != '' and status != null">
+                          AND status = #{status}
+                    </if>
+               </where>
+               <if test="sortField != '' and sortField != null and sortOrder != '' and sortOrder != null">
+                    ORDER BY ${sortField} ${sortOrder}
+               </if>
+               LIMIT 20 OFFSET #{offset}
+     </select>
+
+     <select id="getReportListCount" parameterType="com.blog.blograss.apis.report.object.ReportListParamDto" resultType="Integer">
+          SELECT COUNT(*) FROM report
+               <where>
+                    <if test="search != '' and search != null">
+                          AND userid LIKE CONCAT('%',#{search},'%')
+                    </if>
+                    <if test="target != '' and target != null">
+                          AND target = #{target}
+                    </if>
+                    <if test="type != '' and type != null">
+                          AND type = #{type}
+                    </if>
+                    <if test="status != '' and status != null">
+                          AND status = #{status}
+                    </if>
+               </where>
+     </select>
+
 </mapper>

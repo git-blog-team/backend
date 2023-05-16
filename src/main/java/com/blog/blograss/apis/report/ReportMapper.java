@@ -1,13 +1,19 @@
 package com.blog.blograss.apis.report;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
 import com.blog.blograss.apis.report.object.ReportDto;
+import com.blog.blograss.apis.report.object.ReportListParamDto;
 
 @Mapper
 public interface ReportMapper {
+
+    List<ReportDto> getReportList(ReportListParamDto reportListParamDto);
+
+    Integer getReportListCount(ReportListParamDto reportListParamDto);
 
     ReportDto getReportById(String reportId);
 

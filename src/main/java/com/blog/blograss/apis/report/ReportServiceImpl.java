@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.blog.blograss.apis.adminuser.AdminUserMapper;
 import com.blog.blograss.apis.report.object.ReportDto;
+import com.blog.blograss.apis.report.object.ReportListParamDto;
 import com.blog.blograss.apis.report.object.Status;
 import com.blog.blograss.apis.report.object.Target;
 import com.blog.blograss.commons.response.Message;
@@ -25,6 +26,17 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private AdminUserMapper adminUserMapper;
+
+    @Override
+    public ResponseEntity<Message> getReportList(ReportListParamDto reportListParamDto) {
+        
+        try {
+            return ResponseEntity.ok().body(Message.write("SUCCESS", reportMapper.getReportList(reportListParamDto), reportMapper.getReportListCount(reportListParamDto)));
+        } catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Message.write("INTERNAL_SERVER_ERROR", e.toString()));
+        }
+    }
 
     @Override
 	public ResponseEntity<Message> getReportDetail(String reportId) {
