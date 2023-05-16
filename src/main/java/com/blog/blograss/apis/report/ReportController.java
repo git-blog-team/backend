@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blog.blograss.apis.report.object.ReportDto;
@@ -26,13 +27,21 @@ public class ReportController {
     private ReportService reportService;
     
     @GetMapping("/list")
-    public ResponseEntity<Message> getReportList() {
+    public ResponseEntity<Message> getReportList(
+        @RequestParam Integer page,
+        @RequestParam String target,
+        @RequestParam String type,
+        @RequestParam String status,
+        @RequestParam String order
+    ) {
         return null;
     }
 
     @GetMapping
-    public ResponseEntity<Message> getReportDetail() {
-        return null;
+    public ResponseEntity<Message> getReportDetail(
+        @RequestParam String reportId
+    ) {
+        return reportService.getReportDetail(reportId);
     }
 
     @PostMapping("/accept")

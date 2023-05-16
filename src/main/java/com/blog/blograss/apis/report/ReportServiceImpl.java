@@ -27,6 +27,26 @@ public class ReportServiceImpl implements ReportService {
     private AdminUserMapper adminUserMapper;
 
     @Override
+	public ResponseEntity<Message> getReportDetail(String reportId) {
+
+        String target = reportMapper.getReportTargetById(reportId);
+
+        if(target == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Message.write("NOT_FOUND_TARGET"));
+        }
+
+        try {
+            if(target.matches("COMMENT")) {
+                return ResponseEntity.ok().body(Message.write("SUCCESS",  reportMapper.getReportTargetDetailByComment(reportId)));
+            } else {
+                return ResponseEntity.ok().body(Message.write("SUCCESS",  reportMapper.getReportTargetDetailByPost(reportId)));
+            }
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Message.write("INTERNAL_SERVER_ERROR", e));
+        }
+	}
+
+    @Override
     @Transactional
     public ResponseEntity<Message> acceptReport(ReportDto reportDto, String adminId) {
         
