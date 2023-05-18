@@ -27,8 +27,19 @@ public class SecurityConfig {
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     private static final String[] WHITE_LIST = {
-        "/admin/login",
-		"/admin/signup"
+		"/v2/api-docs",
+		"/swagger-resources",
+		"/swagger-resources/**",
+		"/configuration/ui",
+		"/configuration/security",
+		"/swagger-ui.html",
+		"/webjars/**",
+		/* swagger v3 */
+		"/v3/api-docs/**",
+		"/swagger-ui/**",
+		"/admin/login",
+		"/admin/signup",
+		"/admin/reissue"
     };
 
 
