@@ -117,13 +117,6 @@ public class NoticeServiceImpl implements NoticeService {
         
         try {
 
-            List<String> imageIdsToDelete = noticeMapper.getNoticeImageIdsToDelete(noticeIdsDto);
-
-            for (String imageId : imageIdsToDelete) {
-                String bucketPath = "images/" + imageId;
-                amazonS3Client.deleteObject(bucket, bucketPath);
-            }
-
             noticeMapper.deleteNoticeImage(noticeIdsDto);
             
             noticeMapper.deleteNotice(noticeIdsDto);
