@@ -14,7 +14,7 @@ public interface NoticeService {
     
     ResponseEntity<Message> getNotice(String noticeId);
 
-    ResponseEntity<Message> deleteNotice(NoticeIdsDto noticeIdDto);
+    ResponseEntity<Message> deleteNotice(NoticeIdsDto noticeIdsDto);
 
     ResponseEntity<Message> getNoticeList(String search, int page, String sortField, String sortOrder);
 
