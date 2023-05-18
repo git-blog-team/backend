@@ -14,12 +14,26 @@
           VALUES (#{noticeId}, #{imageId})
      </insert>
 
+     <select id="getImageIds" resultType="string">
+          SELECT imageid FROM noticeimage WHERE noticeid = #{noticeId}
+     </select>
+
      <resultMap id="NoticeResultMap" type="com.blog.blograss.apis.notice.object.NoticeDto">
           <id property="noticeId" column="noticeid" />
           <result property="title" column="title" />
           <result property="content" column="content" />
           <result property="createdAt" column="createdAt" />
           <collection property="imageIds" ofType="string" javaType="java.util.ArrayList">
+               <result column="imageid"/>
+          </collection>
+     </resultMap>
+
+     <resultMap id="NoticeListResultMap" type="com.blog.blograss.apis.notice.object.NoticeDto">
+          <id property="noticeId" column="noticeid"/>
+          <result property="title" column="title"/>
+          <result property="content" column="content"/>
+          <result property="createdAt" column="createdAt"/>
+          <collection property="imageIds" ofType="string" select="getImageIds" column="noticeid">
                <result column="imageid"/>
           </collection>
      </resultMap>
@@ -35,6 +49,22 @@
           LEFT JOIN noticeimage ni ON n.noticeid = ni.noticeid
           WHERE n.noticeid = #{noticeId}
      </select>
+
+     
+     <select id="getNoticeList" resultMap="NoticeListResultMap">
+        SELECT * FROM notice 
+        <where>
+            <if test="search != ''">
+                AND title LIKE CONCAT('%',#{search},'%')
+            </if>
+        </where>
+        <if test="sortField != '' and sortOrder != ''">
+            ORDER BY ${sortField} ${sortOrder}
+        </if>
+        LIMIT 20 OFFSET #{offset}
+    </select>
+     
+
 
      <select id="deleteNotice">
         DELETE FROM notice WHERE noticeid IN
@@ -58,18 +88,6 @@
           </foreach>
      </select>
 
-     <select id="getNoticeList" resultType="com.blog.blograss.apis.notice.object.NoticeDto">
-        SELECT * FROM notice 
-        <where>
-            <if test="search != ''">
-                AND title LIKE CONCAT('%',#{search},'%')
-            </if>
-        </where>
-        <if test="sortField != '' and sortOrder != ''">
-            ORDER BY ${sortField} ${sortOrder}
-        </if>
-        LIMIT 20 OFFSET #{offset}
-    </select>
 
     <select id="getNoticeCount" resultType="java.lang.Integer">
           SELECT COUNT(*) FROM notice
