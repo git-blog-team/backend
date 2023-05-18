@@ -4,6 +4,49 @@
      "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
 <mapper namespace="com.blog.blograss.apis.report.ReportMapper">
 
+     <resultMap id="reportDetailByPost" type="java.util.Map">
+        <id property="reportId" column="reportid"></id>
+        <result property="type" column="type"></result>
+        <result property="target" column="target"></result>
+        <result property="status" column="status"></result>
+        <result property="targetId" column="targetid"></result>
+        <result property="createdAt" column="rpcreatedat"></result>
+        <result property="updatedAt" column="rpupdatedat"></result>
+        <result property="solvedAt" column="solvedat"></result>
+        <result property="userId" column="rpuserid"></result>
+        <collection property="targetObject" javaType="java.util.Map" ofType="java.util.Map">
+            <id property="postId" column="postid"></id>
+            <result property="title" column="title"></result>
+            <result property="content" column="content"></result>
+            <result property="createdAt" column="createdat"></result>
+            <result property="updatedAt" column="updatedat"></result>
+            <result property="reportCount" column="reportcount"></result>
+            <result property="userId" column="userid"></result>
+        </collection>
+    </resultMap>
+
+     <resultMap id="reportDetailByComment" type="java.util.Map">
+        <id property="reportId" column="reportid"></id>
+        <result property="type" column="type"></result>
+        <result property="target" column="target"></result>
+        <result property="status" column="status"></result>
+        <result property="targetId" column="targetid"></result>
+        <result property="createdAt" column="rpcreatedat"></result>
+        <result property="updatedAt" column="rpupdatedat"></result>
+        <result property="solvedAt" column="solvedat"></result>
+        <result property="userId" column="rpuserid"></result>
+        <collection property="targetObject" javaType="java.util.Map" ofType="java.util.Map">
+            <id property="commentId" column="commentid"></id>
+            <result property="postId" column="postid"></result>
+            <result property="content" column="content"></result>
+            <result property="createdAt" column="createdat"></result>
+            <result property="updatedAt" column="updatedat"></result>
+            <result property="reportCount" column="reportcount"></result>
+            <result property="userId" column="userid"></result>
+        </collection>
+    </resultMap>
+
+
      <insert id="insertReport" parameterType="com.blog.blograss.apis.report.object.ReportDto">
           INSERT INTO report (reportid, type, status, target, targetid, userid)
                VALUES (#{reportId}, #{type}, #{status}, #{target}, #{targetId}, #{userId});
@@ -58,6 +101,62 @@
 
      <select id="getCommentById" parameterType="String" resultType="java.util.HashMap">
           SELECT * FROM comment WHERE commentid = #{targetId};
+     </select>
+
+     <select id="getReportTargetById" parameterType="String" resultType="String">
+          SELECT target FROM report WHERE reportid = #{reportId};
+     </select>
+
+     <select id="getReportTargetDetailByPost" parameterType="String" resultMap="reportDetailByPost">
+          SELECT r.reportid, r.`type`, r.target, r.status, r.targetid, r.createdat AS rpcreatedat, r.updatedat AS rpupdatedat, r.solvedat, r.userid AS rpuserid, p.postid, p.title, p.content, p.createdat, p.updatedat, p.reportcount, p.userid 
+	          FROM report r, post p 
+	          WHERE r.targetid = p.postid AND r.reportid = #{reportId};
+     </select>
+
+     <select id="getReportTargetDetailByComment" parameterType="String" resultMap="reportDetailByComment">
+          SELECT r.reportid, r.`type`, r.target, r.status, r.targetid, r.createdat AS rpcreatedat, r.updatedat AS rpupdatedat, r.solvedat, r.userid AS rpuserid, c.commentid, c.postid, c.userid, c.content, c.createdat, c.updatedat, c.reportcount 
+	          FROM report r, comment c 
+	          WHERE r.targetid = c.commentid AND r.reportid = #{reportId};
+     </select>
+
+     <select id="getReportList" parameterType="com.blog.blograss.apis.report.object.ReportListParamDto" resultType="com.blog.blograss.apis.report.object.ReportDto">
+          SELECT * FROM report
+               <where>
+                    <if test="search != '' and search != null">
+                          AND userid LIKE CONCAT('%',#{search},'%')
+                    </if>
+                    <if test="target != '' and target != null">
+                          AND target = #{target}
+                    </if>
+                    <if test="type != '' and type != null">
+                          AND type = #{type}
+                    </if>
+                    <if test="status != '' and status != null">
+                          AND status = #{status}
+                    </if>
+               </where>
+               <if test="sortField != '' and sortField != null and sortOrder != '' and sortOrder != null">
+                    ORDER BY ${sortField} ${sortOrder}
+               </if>
+               LIMIT 20 OFFSET #{offset}
+     </select>
+
+     <select id="getReportListCount" parameterType="com.blog.blograss.apis.report.object.ReportListParamDto" resultType="Integer">
+          SELECT COUNT(*) FROM report
+               <where>
+                    <if test="search != '' and search != null">
+                          AND userid LIKE CONCAT('%',#{search},'%')
+                    </if>
+                    <if test="target != '' and target != null">
+                          AND target = #{target}
+                    </if>
+                    <if test="type != '' and type != null">
+                          AND type = #{type}
+                    </if>
+                    <if test="status != '' and status != null">
+                          AND status = #{status}
+                    </if>
+               </where>
      </select>
 
 </mapper>

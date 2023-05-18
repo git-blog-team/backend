@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.blog.blograss.apis.adminuser.AdminUserMapper;
 import com.blog.blograss.apis.report.object.ReportDto;
+import com.blog.blograss.apis.report.object.ReportListParamDto;
 import com.blog.blograss.apis.report.object.Status;
 import com.blog.blograss.apis.report.object.Target;
 import com.blog.blograss.commons.response.Message;
@@ -27,6 +28,37 @@ public class ReportServiceImpl implements ReportService {
     private AdminUserMapper adminUserMapper;
 
     @Override
+    public ResponseEntity<Message> getReportList(ReportListParamDto reportListParamDto) {
+        
+        try {
+            return ResponseEntity.ok().body(Message.write("SUCCESS", reportMapper.getReportList(reportListParamDto), reportMapper.getReportListCount(reportListParamDto)));
+        } catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Message.write("INTERNAL_SERVER_ERROR", e.toString()));
+        }
+    }
+
+    @Override
+	public ResponseEntity<Message> getReportDetail(String reportId) {
+
+        String target = reportMapper.getReportTargetById(reportId);
+
+        if(target == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Message.write("NOT_FOUND_TARGET"));
+        }
+
+        try {
+            if(target.matches("COMMENT")) {
+                return ResponseEntity.ok().body(Message.write("SUCCESS",  reportMapper.getReportTargetDetailByComment(reportId)));
+            } else {
+                return ResponseEntity.ok().body(Message.write("SUCCESS",  reportMapper.getReportTargetDetailByPost(reportId)));
+            }
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Message.write("INTERNAL_SERVER_ERROR", e));
+        }
+	}
+
+    @Override
     @Transactional
     public ResponseEntity<Message> acceptReport(ReportDto reportDto, String adminId) {
         
@@ -38,6 +70,10 @@ public class ReportServiceImpl implements ReportService {
         // 신고글이 있는지 확인
         if(findReportDto == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Message.write("NOT_FOUND_REPORT"));
+        }
+
+        if(findReportDto.getStatus().equals(Status.DENY)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Message.write("ALREADY_DENY_ERR"));
         }
 
         try {
@@ -125,6 +161,10 @@ public class ReportServiceImpl implements ReportService {
         // 신고글이 있는지 확인
         if(findReportDto == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Message.write("NOT_FOUND_REPORT"));
+        }
+
+        if(findReportDto.getStatus().equals(Status.APPROVAL)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Message.write("ALREADY_APPROVAL_ERR"));
         }
 
         try {
