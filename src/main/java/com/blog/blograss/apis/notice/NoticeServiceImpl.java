@@ -139,7 +139,12 @@ public class NoticeServiceImpl implements NoticeService {
         try {
             List<String> list = java.util.Arrays.asList(noticeId);
 
-            noticeMapper.deleteNoticeImage(NoticeIdsDto.builder().noticeIds(list).build());
+            NoticeIdsDto noticeIdsDto = new NoticeIdsDto();
+
+            noticeIdsDto.setNoticeIds(list);
+
+            
+            noticeMapper.deleteNoticeImage(noticeIdsDto);
 
             for (String imageId : noticeDto.getImageIds()) {
 
