@@ -99,14 +99,15 @@ public class BannerServiceImpl implements BannerService {
     }
 
     @Override
-    public ResponseEntity<Message> getBannerList(int page, String bannerType, String search, String sortField, String sortOrder) {
+    public ResponseEntity<Message> getBannerList(int rowCount, int page, String bannerType, String search, String sortField, String sortOrder) {
 
         try {
 
-            int offset = (page - 1) * 20;
+            int offset = (page - 1) * rowCount;
 
             BannerListQueryDto bannerListQueryDto = BannerListQueryDto.builder()
                     .offset(offset)
+                    .rowCount(rowCount)
                     .bannerType(bannerType)
                     .sortField(sortField)
                     .sortOrder(sortOrder)

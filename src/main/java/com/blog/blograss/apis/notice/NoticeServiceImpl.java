@@ -64,15 +64,16 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public ResponseEntity<Message> getNoticeList(String search, int page, String sortField, String sortOrder) {
+    public ResponseEntity<Message> getNoticeList(String search, int page, String sortField, String sortOrder, int rowCount) {
 
-        int offset = (page - 1) * 20;
-
+        int offset = (page - 1) * rowCount;
+      
         NoticeListQueryDto noticeListQueryDto = NoticeListQueryDto.builder()
                 .search(search)
                 .offset(offset)
                 .sortField(sortField)
                 .sortOrder(sortOrder)
+                .rowCount(rowCount)
                 .build();
         try {
 

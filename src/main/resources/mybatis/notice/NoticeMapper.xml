@@ -61,7 +61,7 @@
         <if test="sortField != '' and sortOrder != ''">
             ORDER BY ${sortField} ${sortOrder}
         </if>
-        LIMIT 20 OFFSET #{offset}
+        LIMIT #{rowCount} OFFSET #{offset}
     </select>
      
 

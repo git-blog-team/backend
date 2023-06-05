@@ -8,6 +8,7 @@ import lombok.Data;
 public class NoticeListQueryDto {
     
     private int offset;
+    private int rowCount;
     private String search;
     private String sortField;
     private String sortOrder;
