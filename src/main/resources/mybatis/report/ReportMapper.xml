@@ -119,42 +119,82 @@
 	          WHERE r.targetid = c.commentid AND r.reportid = #{reportId};
      </select>
 
-     <select id="getReportList" parameterType="com.blog.blograss.apis.report.object.ReportListParamDto" resultType="com.blog.blograss.apis.report.object.ReportDto">
-          SELECT * FROM report
+     <select id="getReportListPost" parameterType="com.blog.blograss.apis.report.object.ReportListParamDto" resultMap="reportDetailByPost">
+          SELECT r.reportid, r.`type`, r.target, r.status, r.targetid, r.createdat AS rpcreatedat, r.updatedat AS rpupdatedat, r.solvedat, r.userid AS rpuserid, p.postid, p.title, p.content, p.createdat, p.updatedat, p.reportcount, p.userid 
+               FROM report r, post p
                <where>
+                    r.target = 'POST'
+                    AND r.targetid = p.postid
                     <if test="search != '' and search != null">
-                          AND userid LIKE CONCAT('%',#{search},'%')
-                    </if>
-                    <if test="target != '' and target != null">
-                          AND target = #{target}
+                          AND p.userid LIKE CONCAT('%',#{search},'%')
                     </if>
                     <if test="type != '' and type != null">
-                          AND type = #{type}
+                          AND r.type = #{type}
                     </if>
                     <if test="status != '' and status != null">
-                          AND status = #{status}
+                          AND r.status = #{status}
                     </if>
                </where>
                <if test="sortField != '' and sortField != null and sortOrder != '' and sortOrder != null">
                     ORDER BY ${sortField} ${sortOrder}
                </if>
-               LIMIT 20 OFFSET #{offset}
+               LIMIT #{limit} OFFSET #{offset}
      </select>
 
-     <select id="getReportListCount" parameterType="com.blog.blograss.apis.report.object.ReportListParamDto" resultType="Integer">
-          SELECT COUNT(*) FROM report
+     <select id="getReportListComment" parameterType="com.blog.blograss.apis.report.object.ReportListParamDto" resultMap="reportDetailByComment">
+          SELECT r.reportid, r.`type`, r.target, r.status, r.targetid, r.createdat AS rpcreatedat, r.updatedat AS rpupdatedat, r.solvedat, r.userid AS rpuserid, c.commentid, c.postid, c.userid, c.content, c.createdat, c.updatedat, c.reportcount 
+	          FROM report r, comment c 
                <where>
+                    target = 'COMMENT'
+                    AND r.targetid = c.commentid
                     <if test="search != '' and search != null">
-                          AND userid LIKE CONCAT('%',#{search},'%')
-                    </if>
-                    <if test="target != '' and target != null">
-                          AND target = #{target}
+                          AND c.userid LIKE CONCAT('%',#{search},'%')
                     </if>
                     <if test="type != '' and type != null">
-                          AND type = #{type}
+                          AND r.type = #{type}
                     </if>
                     <if test="status != '' and status != null">
-                          AND status = #{status}
+                          AND r.status = #{status}
+                    </if>
+               </where>
+               <if test="sortField != '' and sortField != null and sortOrder != '' and sortOrder != null">
+                    ORDER BY ${sortField} ${sortOrder}
+               </if>
+               LIMIT #{limit} OFFSET #{offset}
+     </select>
+
+     <select id="getReportListCountPost" parameterType="com.blog.blograss.apis.report.object.ReportListParamDto" resultType="Integer">
+          SELECT COUNT(*)
+               FROM report r, post p
+               <where>
+                    r.target = 'POST'
+                    AND r.targetid = p.postid
+                    <if test="search != '' and search != null">
+                          AND p.userid LIKE CONCAT('%',#{search},'%')
+                    </if>
+                    <if test="type != '' and type != null">
+                          AND r.type = #{type}
+                    </if>
+                    <if test="status != '' and status != null">
+                          AND r.status = #{status}
+                    </if>
+               </where>
+     </select>
+
+     <select id="getReportListCountComment" parameterType="com.blog.blograss.apis.report.object.ReportListParamDto" resultType="Integer">
+          SELECT COUNT(*)
+	          FROM report r, comment c 
+               <where>
+                    target = 'COMMENT'
+                    AND r.targetid = c.commentid
+                    <if test="search != '' and search != null">
+                          AND c.userid LIKE CONCAT('%',#{search},'%')
+                    </if>
+                    <if test="type != '' and type != null">
+                          AND r.type = #{type}
+                    </if>
+                    <if test="status != '' and status != null">
+                          AND r.status = #{status}
                     </if>
                </where>
      </select>

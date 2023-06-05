@@ -8,7 +8,9 @@ import com.blog.blograss.commons.response.Message;
 
 public interface ReportService {
 
-    ResponseEntity<Message> getReportList(ReportListParamDto reportListParamDto);
+    ResponseEntity<Message> getReportListPost(ReportListParamDto reportListParamDto);
+
+    ResponseEntity<Message> getReportListComment(ReportListParamDto reportListParamDto);
 
     ResponseEntity<Message> getReportDetail(String reportId);
 
