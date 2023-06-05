@@ -65,7 +65,7 @@ public ResponseEntity<Message> deleteBanner(@RequestBody BannerIdsDto bannerIdsD
 }
 
 @GetMapping("/list")
-public ResponseEntity<Message> getBannerList(@RequestParam("page") int page, @RequestParam("search") String search, @RequestParam("bannerType") String bannerType, @RequestParam("sortField") String sortField, @RequestParam("sortOrder") String sortOrder) { 
+public ResponseEntity<Message> getBannerList(@RequestParam("rowCount") int rowCount, @RequestParam("page") int page, @RequestParam("search") String search, @RequestParam("bannerType") String bannerType, @RequestParam("sortField") String sortField, @RequestParam("sortOrder") String sortOrder) { 
 
     if (!(sortField.equals("createdat") || sortField.equals("startedat") || sortField.equals("endedat") || sortField.equals(""))) {
         return ResponseEntity.status(HttpStatusCode.valueOf(400)).body(Message.write("BAD_REQUEST"));
@@ -75,7 +75,7 @@ public ResponseEntity<Message> getBannerList(@RequestParam("page") int page, @Re
         return ResponseEntity.status(HttpStatusCode.valueOf(400)).body(Message.write("BAD_REQUEST"));
     }
 
-    return bannerService.getBannerList(page, bannerType, search, sortField, sortOrder);
+    return bannerService.getBannerList(rowCount, page, bannerType, search, sortField, sortOrder);
 
 } 
 

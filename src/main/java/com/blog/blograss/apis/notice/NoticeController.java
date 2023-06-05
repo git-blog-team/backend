@@ -37,7 +37,7 @@ public ResponseEntity<Message> createNotice(@RequestBody NoticeDto noticeDto) {
 }
 
 @GetMapping("/list")
-public ResponseEntity<Message> getNoticeList(@RequestParam("search") String search, @RequestParam("page") int page, @RequestParam("sortField") String sortField, @RequestParam("sortOrder") String sortOrder) {
+public ResponseEntity<Message> getNoticeList(@RequestParam("rowCount") int rowCount, @RequestParam("search") String search, @RequestParam("page") int page, @RequestParam("sortField") String sortField, @RequestParam("sortOrder") String sortOrder) {
 
 
     if (!(sortField.equals("title") || sortField.equals("createdat") || sortField.equals(""))) {
@@ -50,7 +50,7 @@ public ResponseEntity<Message> getNoticeList(@RequestParam("search") String sear
         return ResponseEntity.status(HttpStatusCode.valueOf(400)).body(Message.write("Bad Request"));
     }
     
-    return noticeService.getNoticeList(search, page, sortField, sortOrder);
+    return noticeService.getNoticeList(search, page, sortField, sortOrder, rowCount);
 
 }
 

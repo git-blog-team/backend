@@ -14,7 +14,7 @@ public interface BannerService {
 
     ResponseEntity<Message> deleteBanner(BannerIdsDto bannerIds);
 
-    ResponseEntity<Message> getBannerList(int offset, String bannerType, String search, String sortOrder, String sortField);
+    ResponseEntity<Message> getBannerList(int rowCount, int offset, String bannerType, String search, String sortOrder, String sortField);
 
     ResponseEntity<Message> updateBanner(BannerDto banner, String BannerId);
 }

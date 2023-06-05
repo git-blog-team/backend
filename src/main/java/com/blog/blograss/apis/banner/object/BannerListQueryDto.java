@@ -8,6 +8,7 @@ import lombok.Data;
 public class BannerListQueryDto {
 
     private int offset;
+    private int rowCount;
     private String search;
     private String bannerType;
     private String sortField;
