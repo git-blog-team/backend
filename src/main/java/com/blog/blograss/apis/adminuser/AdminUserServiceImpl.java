@@ -49,13 +49,13 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public ResponseEntity<Message> login(AdminUserDto adminUserDto) {
-        AdminUserDto findAdminUSerDto = adminUserMapper.getAdminUserById(adminUserDto.getAdminId());
+        AdminUserDto findUserDto = adminUserMapper.getAdminUserById(adminUserDto.getAdminId());
 
-        if(findAdminUSerDto == null) {
+        if(findUserDto == null) {
             return ResponseEntity.badRequest().body(Message.write("EMAIL_NOTFOUND_ERR"));
         }
 
-        if(!passwordEncoder.matches(adminUserDto.getPassword(), findAdminUSerDto.getPassword())){
+        if(!passwordEncoder.matches(adminUserDto.getPassword(), findUserDto.getPassword())){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Message.write("PASSWORD_DISCREPANCY_ERR"));
         }
 
@@ -66,7 +66,10 @@ public class AdminUserServiceImpl implements AdminUserService {
         TokenDto refreshToken = tokenProvider.createRefreshToken(authentication);
         TokenDto accessToken = tokenProvider.createToken(authentication, refreshToken.getRefreshToken());
 
+        findUserDto.setPassword(null);
+
         accessToken.setRefreshToken(refreshToken.getRefreshToken());
+        accessToken.setAdminInfo(findUserDto);
 
         return ResponseEntity.ok().body(Message.write("SUCESS", accessToken));
     }
@@ -105,6 +108,12 @@ public class AdminUserServiceImpl implements AdminUserService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(userId, null);
 
         TokenDto tokenDto = tokenProvider.createToken(authentication, refreshToken);
+
+        AdminUserDto adminUserDto = adminUserMapper.getAdminUserById(userId);
+
+        adminUserDto.setPassword(null);
+
+        tokenDto.setAdminInfo(adminUserDto);
 
         return ResponseEntity.ok().body(Message.write("SUCESS", tokenDto));
     }

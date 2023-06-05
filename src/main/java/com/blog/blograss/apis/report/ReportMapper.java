@@ -11,9 +11,13 @@ import com.blog.blograss.apis.report.object.ReportListParamDto;
 @Mapper
 public interface ReportMapper {
 
-    List<ReportDto> getReportList(ReportListParamDto reportListParamDto);
+    List<Map<String, Object>> getReportListPost(ReportListParamDto reportListParamDto);
 
-    Integer getReportListCount(ReportListParamDto reportListParamDto);
+    List<Map<String, Object>> getReportListComment(ReportListParamDto reportListParamDto);
+
+    Integer getReportListCountPost(ReportListParamDto reportListParamDto);
+
+    Integer getReportListCountComment(ReportListParamDto reportListParamDto);
 
     ReportDto getReportById(String reportId);
 

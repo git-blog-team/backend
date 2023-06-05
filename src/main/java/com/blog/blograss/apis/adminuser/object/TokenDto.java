@@ -8,6 +8,7 @@ public class TokenDto {
 
     private String accessToken;
     private String refreshToken;
+    private AdminUserDto adminInfo;
 
     @Builder
     public TokenDto(String accessToken, String refreshToken) {
