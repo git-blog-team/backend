@@ -14,4 +14,5 @@ public class ReportListParamDto {
     private String sortField;
     private String sortOrder;
     private String search;
+    private Integer limit;
 }

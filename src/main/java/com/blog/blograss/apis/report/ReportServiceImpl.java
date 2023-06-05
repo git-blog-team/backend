@@ -28,10 +28,21 @@ public class ReportServiceImpl implements ReportService {
     private AdminUserMapper adminUserMapper;
 
     @Override
-    public ResponseEntity<Message> getReportList(ReportListParamDto reportListParamDto) {
+    public ResponseEntity<Message> getReportListPost(ReportListParamDto reportListParamDto) {
         
         try {
-            return ResponseEntity.ok().body(Message.write("SUCCESS", reportMapper.getReportList(reportListParamDto), reportMapper.getReportListCount(reportListParamDto)));
+            return ResponseEntity.ok().body(Message.write("SUCCESS", reportMapper.getReportListPost(reportListParamDto), reportMapper.getReportListCountPost(reportListParamDto)));
+        } catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Message.write("INTERNAL_SERVER_ERROR", e.toString()));
+        }
+    }
+
+    @Override
+    public ResponseEntity<Message> getReportListComment(ReportListParamDto reportListParamDto) {
+        
+        try {
+            return ResponseEntity.ok().body(Message.write("SUCCESS", reportMapper.getReportListComment(reportListParamDto), reportMapper.getReportListCountComment(reportListParamDto)));
         } catch(Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Message.write("INTERNAL_SERVER_ERROR", e.toString()));
