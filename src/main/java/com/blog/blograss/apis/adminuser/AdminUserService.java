@@ -15,6 +15,8 @@ public interface AdminUserService {
 
     ResponseEntity<Message> reissue(String accessToken, String refreshToken);
 
+    ResponseEntity<Message> getUserInfo(String adminId);
+
     AdminUserDto getAdminUserById(String adminId);
 
 }

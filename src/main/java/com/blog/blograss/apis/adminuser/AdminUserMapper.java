@@ -11,4 +11,5 @@ public interface AdminUserMapper {
 
     public AdminUserDto getAdminUserById(String adminId);
     
+    public AdminUserDto getUserInfo(String adminId);
 }

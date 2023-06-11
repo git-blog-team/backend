@@ -12,4 +12,8 @@
         SELECT * FROM admin WHERE adminid = #{adminId};
     </select>
 
+    <select id="getUserInfo" parameterType="String" resultType="com.blog.blograss.apis.adminuser.object.AdminUserDto">
+        SELECT * FROM admin WHERE adminid = #{adminId};
+    </select>
+
 </mapper>

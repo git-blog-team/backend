@@ -117,5 +117,19 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         return ResponseEntity.ok().body(Message.write("SUCESS", tokenDto));
     }
+
+    @Override
+    public ResponseEntity<Message> getUserInfo(String adminId) {
+
+        try {
+            AdminUserDto adminUserDto = adminUserMapper.getAdminUserById(adminId);
+
+            adminUserDto.setPassword(null);
+        
+            return ResponseEntity.ok().body(Message.write("SUCCESS", adminUserDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Message.write("FAIL", e.toString()));
+        }
+    }
     
 }

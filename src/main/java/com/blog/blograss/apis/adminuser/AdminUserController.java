@@ -17,6 +17,7 @@ import com.blog.blograss.apis.adminuser.object.AdminUserDto;
 import com.blog.blograss.commons.jwt.JwtTokenProvider;
 import com.blog.blograss.commons.response.Message;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RequestMapping("/admin")
@@ -34,6 +35,18 @@ public class AdminUserController {
 
     @Autowired
     private JwtTokenProvider tokenProvider;
+
+    @GetMapping("/userInfo")
+    public ResponseEntity<Message> getUserInfo(HttpServletRequest req) {
+
+        String accessToken = tokenProvider.extractAccessToken(req);
+
+        Claims claims = tokenProvider.getClaims(accessToken);
+
+        String adminId = claims.getSubject();
+
+        return adminUserService.getUserInfo(adminId);
+    }
     
     @PostMapping("/signup")
     public ResponseEntity<Message> postMethodName(@RequestBody AdminUserDto adminUserDto) {
